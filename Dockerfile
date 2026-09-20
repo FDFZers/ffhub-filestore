@@ -17,7 +17,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build \
         -X fdfz-filestore/internal/config.BuildTime=${BUILD_TIME}" \
     -trimpath \
     -o ./server \
-    ./cmd/server
+    ./cmd/server/main.go
 
 FROM alpine AS runtime
 

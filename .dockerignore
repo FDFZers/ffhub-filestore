@@ -45,4 +45,4 @@ logs
 !.env.example
 
 # Storage files
-storage
+/storage
