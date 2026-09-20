@@ -111,7 +111,7 @@ func GetFileMetaBySlug(ctx context.Context, slug string) (*model.FileMetadata, *
 		return nil, err.AppendDetails("文件元数据 ID 获取失败")
 	}
 	if id == nil {
-		return nil, errs.NotFoundError().AppendDetails("文件元数据不存在")
+		return nil, errs.NotFoundError().AppendDetails("文件不存在")
 	}
 
 	meta, err := GetFileMetaByID(ctx, *id)
@@ -119,7 +119,7 @@ func GetFileMetaBySlug(ctx context.Context, slug string) (*model.FileMetadata, *
 		return nil, err
 	}
 	if meta == nil {
-		return nil, errs.NotFoundError().AppendDetails("文件元数据不存在")
+		return nil, errs.NotFoundError().AppendDetails("文件不存在")
 	}
 	return meta, nil
 }

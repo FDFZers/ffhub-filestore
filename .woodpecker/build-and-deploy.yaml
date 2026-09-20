@@ -41,7 +41,7 @@ steps:
         sed -i "s|image:.*|image: $IMAGE_NAME|" $COMPOSE_FILE
 
         cd $(dirname $COMPOSE_FILE)
-        DC="docker compose -f $COMPOSE_FILE --project-directory $(dirname $COMPOSE_FILE)"
+        DC="docker compose -f $COMPOSE_FILE"
         $DC pull 2>/dev/null || true
         $DC up -d --force-recreate
         $DC ps
