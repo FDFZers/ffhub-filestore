@@ -1,0 +1,45 @@
+when:
+  branch: main
+  event: [push, manual]
+
+steps:
+  set-version:
+    image: alpine
+    commands:
+      - |
+        echo "REL_VERSION=${CI_COMMIT_REF:0:8}" > .env
+
+  build:
+    image: docker
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+      - |
+        . .env
+
+        docker build \
+          -t fdfzers/fdfz-filestore:latest \
+          -t fdfzers/fdfz-filestore:$REL_VERSION \
+          -f Dockerfile .
+        docker images fdfzers/fdfz-filestore
+
+  deploy:
+    image: docker
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+      - |
+        . .env
+
+        COMPOSE_FILE="/opt/compose/fdfz-filestore.yml"
+        IMAGE_NAME="fdfzers/fdfz-filestore:$REL_VERSION"
+
+        sed -i "s|image:.*|image: $IMAGE_NAME|" $COMPOSE_FILE
+
+        cd $(dirname $COMPOSE_FILE)
+        docker compose pull 2>/dev/null || true
+        docker compose up -d --force-recreate
+        docker compose ps
+
+        docker compose logs --tail=20
