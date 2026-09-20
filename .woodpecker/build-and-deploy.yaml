@@ -1,6 +1,6 @@
 when:
   branch: main
-  event: [push, manual]
+  event: [ push, manual ]
 
 steps:
   set-version:
@@ -30,6 +30,7 @@ steps:
     image: docker
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - /opt/compose/fdfz-filestore.yml:/opt/compose/fdfz-filestore.yml
     commands:
       - |
         . .env
