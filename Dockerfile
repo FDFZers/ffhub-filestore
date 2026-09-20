@@ -1,6 +1,5 @@
 FROM golang:1.26-alpine AS builder
 
-ARG VERSION=unknown
 ARG COMMIT=unknown
 ARG BUILD_TIME=unknown
 
@@ -14,12 +13,11 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build \
     -ldflags="-s -w \
-        -X fdfz-filestore/internal/config.Version=${VERSION} \
         -X fdfz-filestore/internal/config.Commit=${COMMIT} \
         -X fdfz-filestore/internal/config.BuildTime=${BUILD_TIME}" \
     -trimpath \
     -o ./server \
-    ./cmd/server/main.go
+    ./cmd/server
 
 FROM alpine AS runtime
 

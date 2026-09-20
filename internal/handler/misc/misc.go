@@ -16,7 +16,6 @@ func InitRoutes(api *gin.RouterGroup) {
 
 	api.GET("/version", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"version":    config.Version,
 			"commit":     config.Commit,
 			"build_time": config.BuildTime,
 			"is_prod":    config.IsProd,

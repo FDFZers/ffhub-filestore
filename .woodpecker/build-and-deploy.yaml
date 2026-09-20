@@ -19,6 +19,8 @@ steps:
         . .env
 
         docker build \
+          --build-arg COMMIT=${CI_COMMIT_SHA} \
+          --build-arg BUILD_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ) \
           -t fdfzers/fdfz-filestore:latest \
           -t fdfzers/fdfz-filestore:$REL_VERSION \
           -f Dockerfile .

@@ -39,7 +39,7 @@ func main() {
 
 	slog.SetDefault(logger)
 
-	slog.Info("Starting filestore backend", "version", config.Version, "commit", config.Commit, "build_time", config.BuildTime, "is_prod", config.IsProd)
+	slog.Info("Starting filestore backend", "commit", config.Commit, "build_time", config.BuildTime, "is_prod", config.IsProd)
 
 	// 读取 .env
 	if !config.IsProd {
