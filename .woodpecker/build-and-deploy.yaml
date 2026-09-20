@@ -30,7 +30,7 @@ steps:
     image: docker
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /opt/compose/fdfz-filestore.yml:/opt/compose/fdfz-filestore.yml
+      - /opt/compose:/opt/compose
     commands:
       - |
         . .env
