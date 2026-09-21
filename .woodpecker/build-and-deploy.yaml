@@ -46,5 +46,3 @@ steps:
         $DC up -d --force-recreate
         $DC ps
         $DC logs --tail=20
-
-        docker compose logs --tail=20
