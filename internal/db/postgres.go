@@ -4,7 +4,7 @@ import (
 	"context"
 	"embed"
 	"errors"
-	"fdfz-filestore/internal/config"
+	"ffhub-filestore/internal/config"
 	"fmt"
 	"log/slog"
 	"strings"

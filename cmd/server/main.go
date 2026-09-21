@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"errors"
-	"fdfz-filestore/internal/config"
-	"fdfz-filestore/internal/db"
-	"fdfz-filestore/internal/router"
-	"fdfz-filestore/internal/service/storage"
+	"ffhub-filestore/internal/config"
+	"ffhub-filestore/internal/db"
+	"ffhub-filestore/internal/router"
+	"ffhub-filestore/internal/service/storage"
 	"log/slog"
 	"net/http"
 	"os"
@@ -17,7 +17,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/lmittmann/tint"
-	"github.com/samber/slog-gin"
+	sloggin "github.com/samber/slog-gin"
 )
 
 func main() {

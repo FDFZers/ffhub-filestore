@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"fdfz-filestore/internal/config"
+	"ffhub-filestore/internal/config"
 	"fmt"
 	"log/slog"
 	"time"

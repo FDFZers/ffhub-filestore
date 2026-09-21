@@ -1,4 +1,4 @@
-module fdfz-filestore
+module ffhub-filestore
 
 go 1.26.0
 

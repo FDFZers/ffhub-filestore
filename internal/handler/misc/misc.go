@@ -1,7 +1,7 @@
 package misc
 
 import (
-	"fdfz-filestore/internal/config"
+	"ffhub-filestore/internal/config"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +10,7 @@ import (
 func InitRoutes(api *gin.RouterGroup) {
 	api.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"message": "欢迎来到 FDFZ File Store，寻宝而来的收藏家！",
+			"message": "欢迎来到 FDFZHub File Store！",
 		})
 	})
 

@@ -21,10 +21,10 @@ steps:
         docker build \
           --build-arg COMMIT=${CI_COMMIT_SHA} \
           --build-arg BUILD_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ) \
-          -t fdfzers/fdfz-filestore:latest \
-          -t fdfzers/fdfz-filestore:$REL_VERSION \
+          -t fdfzers/ffhub-filestore:latest \
+          -t fdfzers/ffhub-filestore:$REL_VERSION \
           -f Dockerfile .
-        docker images fdfzers/fdfz-filestore
+        docker images fdfzers/ffhub-filestore
 
   deploy:
     image: docker
@@ -35,8 +35,8 @@ steps:
       - |
         . .env
 
-        COMPOSE_FILE="/opt/compose/fdfz-filestore.yml"
-        IMAGE_NAME="fdfzers/fdfz-filestore:$REL_VERSION"
+        COMPOSE_FILE="/opt/compose/ffhub-filestore.yml"
+        IMAGE_NAME="fdfzers/ffhub-filestore:$REL_VERSION"
 
         sed -i "s|image:.*|image: $IMAGE_NAME|" $COMPOSE_FILE
 

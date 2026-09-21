@@ -2,7 +2,7 @@ package healthcheck
 
 import (
 	"context"
-	"fdfz-filestore/internal/db"
+	"ffhub-filestore/internal/db"
 	"net/http"
 	"sync"
 	"time"

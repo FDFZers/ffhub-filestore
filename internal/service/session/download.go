@@ -2,10 +2,10 @@ package session
 
 import (
 	"context"
-	"fdfz-filestore/internal/config"
-	"fdfz-filestore/internal/db"
-	"fdfz-filestore/internal/errs"
-	"fdfz-filestore/internal/model"
+	"ffhub-filestore/internal/config"
+	"ffhub-filestore/internal/db"
+	"ffhub-filestore/internal/errs"
+	"ffhub-filestore/internal/model"
 	"fmt"
 )
 

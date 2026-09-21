@@ -4,12 +4,12 @@ import (
 	"net/http"
 	"time"
 
-	"fdfz-filestore/internal/config"
-	"fdfz-filestore/internal/errs"
-	"fdfz-filestore/internal/middleware"
-	"fdfz-filestore/internal/model"
-	"fdfz-filestore/internal/service/session"
-	"fdfz-filestore/internal/util/crypto"
+	"ffhub-filestore/internal/config"
+	"ffhub-filestore/internal/errs"
+	"ffhub-filestore/internal/middleware"
+	"ffhub-filestore/internal/model"
+	"ffhub-filestore/internal/service/session"
+	"ffhub-filestore/internal/util/crypto"
 
 	"github.com/gin-gonic/gin"
 )

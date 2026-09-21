@@ -9,10 +9,10 @@ import (
 	"os"
 	"strings"
 
-	"fdfz-filestore/internal/errs"
-	"fdfz-filestore/internal/service/filemeta"
-	"fdfz-filestore/internal/service/session"
-	"fdfz-filestore/internal/service/storage"
+	"ffhub-filestore/internal/errs"
+	"ffhub-filestore/internal/service/filemeta"
+	"ffhub-filestore/internal/service/session"
+	"ffhub-filestore/internal/service/storage"
 
 	"github.com/gin-gonic/gin"
 )
@@ -37,6 +37,18 @@ func serveFile(c *gin.Context, slug string) {
 	if err != nil {
 		err.AppendDetails("文件访问失败").Respond(c)
 		return
+	}
+
+	if !meta.IsPrivate {
+		requestHash := c.Query("v")
+		if requestHash != meta.SHA512 {
+			q := c.Request.URL.Query()
+			q.Set("v", meta.SHA512)
+			target := c.Request.URL.EscapedPath() + "?" + q.Encode()
+			c.Header("Cache-Control", "no-cache")
+			c.Redirect(http.StatusFound, target)
+			return
+		}
 	}
 
 	if meta.IsPrivate {
@@ -77,8 +89,13 @@ func serveFile(c *gin.Context, slug string) {
 	}(f)
 
 	c.Header("Content-Type", meta.ContentType)
-
 	c.Header("Content-Disposition", mime.FormatMediaType("inline", map[string]string{"filename": meta.Filename}))
+
+	if meta.IsPrivate {
+		c.Header("Cache-Control", "private, no-store")
+	} else {
+		c.Header("Cache-Control", "public, max-age=31536000, immutable")
+	}
 
 	http.ServeContent(c.Writer, c.Request, meta.Filename, meta.CreatedAt, f)
 }

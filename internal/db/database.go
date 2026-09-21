@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"fdfz-filestore/internal/errs"
+	"ffhub-filestore/internal/errs"
 	"log/slog"
 	"time"
 

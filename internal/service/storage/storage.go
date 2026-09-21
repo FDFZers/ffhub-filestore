@@ -21,8 +21,5 @@ func EnsureDir() error {
 }
 
 func FilePath(sha512 string) string {
-	if len(sha512) <= 2 {
-		return filepath.Join(FileDir, "other", sha512)
-	}
 	return filepath.Join(FileDir, sha512[:2], sha512)
 }

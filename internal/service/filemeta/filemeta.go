@@ -3,9 +3,9 @@ package filemeta
 import (
 	"context"
 	"errors"
-	"fdfz-filestore/internal/db"
-	"fdfz-filestore/internal/errs"
-	"fdfz-filestore/internal/model"
+	"ffhub-filestore/internal/db"
+	"ffhub-filestore/internal/errs"
+	"ffhub-filestore/internal/model"
 	"fmt"
 	"time"
 

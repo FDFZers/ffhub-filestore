@@ -1,11 +1,11 @@
 package router
 
 import (
-	"fdfz-filestore/internal/handler/download"
-	"fdfz-filestore/internal/handler/file"
-	"fdfz-filestore/internal/handler/healthcheck"
-	"fdfz-filestore/internal/handler/misc"
-	"fdfz-filestore/internal/handler/upload"
+	"ffhub-filestore/internal/handler/download"
+	"ffhub-filestore/internal/handler/file"
+	"ffhub-filestore/internal/handler/healthcheck"
+	"ffhub-filestore/internal/handler/misc"
+	"ffhub-filestore/internal/handler/upload"
 	"strings"
 	"time"
 

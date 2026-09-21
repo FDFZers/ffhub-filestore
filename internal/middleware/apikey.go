@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"crypto/subtle"
-	"fdfz-filestore/internal/config"
-	"fdfz-filestore/internal/errs"
+	"ffhub-filestore/internal/config"
+	"ffhub-filestore/internal/errs"
 
 	"github.com/gin-gonic/gin"
 )
