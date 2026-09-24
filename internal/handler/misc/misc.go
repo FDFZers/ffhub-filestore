@@ -1,7 +1,7 @@
 package misc
 
 import (
-	"ffhub-filestore/internal/config"
+	"ffhub-filestore/internal/cfg"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -16,9 +16,9 @@ func InitRoutes(api *gin.RouterGroup) {
 
 	api.GET("/version", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
-			"commit":     config.Commit,
-			"build_time": config.BuildTime,
-			"is_prod":    config.IsProd,
+			"commit":     cfg.Commit,
+			"build_time": cfg.BuildTime,
+			"is_prod":    cfg.IsProd,
 		})
 	})
 }

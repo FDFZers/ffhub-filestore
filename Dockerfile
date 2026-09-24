@@ -28,12 +28,12 @@ RUN apk add --no-cache ca-certificates tzdata curl \
     && echo "Asia/Shanghai" > /etc/timezone \
     && apk del tzdata
 
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+RUN addgroup -S ffhub && adduser -S ffhub -G ffhub
 
-RUN mkdir -p /app/storage/files /app/storage/tmp \
-    && chown -R appuser:appgroup /app/storage
+RUN mkdir -p /app/storage && chown -R ffhub:ffhub /app/storage
+RUN mkdir -p /app/shared && chown -R ffhub:ffhub /app/shared
 
-USER appuser
+USER ffhub
 
 COPY --from=builder /src/server /app/server
 
@@ -43,6 +43,8 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8080/healthz || exit 1
 
 ENV APP_ENV=prod
+ENV SHARED_DIR="./shared"
 VOLUME /app/storage
+VOLUME /app/shared
 
 ENTRYPOINT ["/app/server"]

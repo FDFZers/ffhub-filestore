@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"ffhub-filestore/internal/config"
+	"ffhub-filestore/internal/cfg"
 	"ffhub-filestore/internal/errs"
 	"ffhub-filestore/internal/middleware"
 	"ffhub-filestore/internal/model"
@@ -46,6 +46,6 @@ func createDownloadHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"token": token,
-		"ttl":   config.C.DownloadTTL,
+		"ttl":   cfg.C.DownloadTTL,
 	})
 }

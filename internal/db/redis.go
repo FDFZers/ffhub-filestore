@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"ffhub-filestore/internal/config"
+	"ffhub-filestore/internal/cfg"
 	"fmt"
 	"log/slog"
 	"time"
@@ -18,7 +18,7 @@ type RDB struct {
 
 func NewRDB() (*RDB, error) {
 	// 从环境变量获取 URL
-	url := config.C.RedisURL
+	url := cfg.C.RedisURL
 	if url == "" {
 		return nil, fmt.Errorf("redis: environment variable REDIS_URL is not set")
 	}

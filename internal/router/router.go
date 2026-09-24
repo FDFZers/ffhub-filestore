@@ -5,7 +5,6 @@ import (
 	"ffhub-filestore/internal/handler/file"
 	"ffhub-filestore/internal/handler/healthcheck"
 	"ffhub-filestore/internal/handler/misc"
-	"ffhub-filestore/internal/handler/upload"
 	"strings"
 	"time"
 
@@ -45,7 +44,6 @@ func InitRouter(r *gin.Engine) {
 	internal := r.Group("/api/internal")
 
 	misc.InitRoutes(v1)
-	upload.InitRoutes(v1, internal)
 	download.InitRoutes(internal)
 	file.InitRoutes(v1)
 }

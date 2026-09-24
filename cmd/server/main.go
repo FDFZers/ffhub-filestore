@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"errors"
-	"ffhub-filestore/internal/config"
+	"ffhub-filestore/internal/cfg"
 	"ffhub-filestore/internal/db"
 	"ffhub-filestore/internal/router"
 	"ffhub-filestore/internal/service/storage"
@@ -24,7 +24,7 @@ func main() {
 	// 初始化日志记录器
 	var logger *slog.Logger
 
-	if config.IsProd {
+	if cfg.IsProd {
 		logger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 			Level: slog.LevelInfo,
 		}))
@@ -39,17 +39,17 @@ func main() {
 
 	slog.SetDefault(logger)
 
-	slog.Info("Starting filestore backend", "commit", config.Commit, "build_time", config.BuildTime, "is_prod", config.IsProd)
+	slog.Info("Starting filestore backend", "commit", cfg.Commit, "build_time", cfg.BuildTime, "is_prod", cfg.IsProd)
 
 	// 读取 .env
-	if !config.IsProd {
+	if !cfg.IsProd {
 		if err := godotenv.Load(); err != nil {
 			slog.Warn("Error loading .env file", "error", err)
 		}
 	}
 
 	// 加载环境变量
-	if err := config.LoadConfig(); err != nil {
+	if err := cfg.LoadConfig(); err != nil {
 		slog.Error("Error loading config", "error", err)
 		os.Exit(1)
 	}
@@ -92,7 +92,7 @@ func main() {
 	r.Use(sloggin.New(logger))
 	healthcheckR.Use(sloggin.New(logger))
 
-	if proxies := config.C.TrustedProxies; len(proxies) > 0 {
+	if proxies := cfg.C.TrustedProxies; len(proxies) > 0 {
 		if err := r.SetTrustedProxies(proxies); err != nil {
 			slog.Error("Error setting trusted proxies", "error", err)
 		}
@@ -125,7 +125,7 @@ func main() {
 		}
 	}()
 
-	if config.IsProd {
+	if cfg.IsProd {
 		go func() {
 			slog.Info("Starting healthcheck server on port 8080")
 			if err := healthcheckSrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {

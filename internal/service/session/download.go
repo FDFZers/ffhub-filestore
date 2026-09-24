@@ -2,7 +2,7 @@ package session
 
 import (
 	"context"
-	"ffhub-filestore/internal/config"
+	"ffhub-filestore/internal/cfg"
 	"ffhub-filestore/internal/db"
 	"ffhub-filestore/internal/errs"
 	"ffhub-filestore/internal/model"
@@ -18,7 +18,7 @@ func DownloadSessionCacheKey(token string) string {
 // ---------------------------------------------------------------------------
 
 func CreateDownloadSession(ctx context.Context, s *model.DownloadSession) *errs.Error {
-	if err := db.SetRedis(ctx, DownloadSessionCacheKey(s.Token), s, config.C.DownloadTTL); err != nil {
+	if err := db.SetRedis(ctx, DownloadSessionCacheKey(s.Token), s, cfg.C.DownloadTTL); err != nil {
 		return err.AppendDetails("下载会话创建失败")
 	}
 	return nil

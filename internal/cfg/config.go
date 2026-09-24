@@ -1,9 +1,8 @@
-package config
+package cfg
 
 import (
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -15,7 +14,7 @@ type Config struct {
 	RedisURL       string
 	APIKey         string
 	TrustedProxies []string
-	UploadTTL      time.Duration
+	SharedDir      string
 	DownloadTTL    time.Duration
 }
 
@@ -41,7 +40,7 @@ func LoadConfig() error {
 		}
 	}
 
-	cfg.UploadTTL = envDur("UPLOAD_TTL", 5*time.Minute)
+	cfg.SharedDir = env("SHARED_DIR", "./shared")
 	cfg.DownloadTTL = envDur("DOWNLOAD_TTL", 5*time.Minute)
 
 	C = cfg
@@ -51,15 +50,6 @@ func LoadConfig() error {
 func env(k, def string) string {
 	if v := os.Getenv(k); v != "" {
 		return v
-	}
-	return def
-}
-
-func envInt(k string, def int64) int64 {
-	if v := os.Getenv(k); v != "" {
-		if i, err := strconv.ParseInt(v, 10, 64); err == nil {
-			return i
-		}
 	}
 	return def
 }

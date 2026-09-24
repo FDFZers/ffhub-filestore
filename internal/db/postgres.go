@@ -4,7 +4,7 @@ import (
 	"context"
 	"embed"
 	"errors"
-	"ffhub-filestore/internal/config"
+	"ffhub-filestore/internal/cfg"
 	"fmt"
 	"log/slog"
 	"strings"
@@ -21,18 +21,18 @@ type PDB struct {
 }
 
 func NewDB() (*PDB, error) {
-	cfg, err := pgxpool.ParseConfig(config.C.PostgresURL)
+	c, err := pgxpool.ParseConfig(cfg.C.PostgresURL)
 	if err != nil {
 		return nil, fmt.Errorf("postgresql: failed to parse dsn: %w", err)
 	}
 
-	cfg.MaxConns = 25
-	cfg.MinConns = 5
-	cfg.MaxConnLifetime = 5 * time.Minute
-	cfg.MaxConnIdleTime = 1 * time.Minute
-	cfg.HealthCheckPeriod = 1 * time.Minute
+	c.MaxConns = 25
+	c.MinConns = 5
+	c.MaxConnLifetime = 5 * time.Minute
+	c.MaxConnIdleTime = 1 * time.Minute
+	c.HealthCheckPeriod = 1 * time.Minute
 
-	pool, err := pgxpool.NewWithConfig(context.Background(), cfg)
+	pool, err := pgxpool.NewWithConfig(context.Background(), c)
 	if err != nil {
 		return nil, fmt.Errorf("postgresql: failed to create pool: %w", err)
 	}
@@ -62,7 +62,7 @@ func RunMigrations() error {
 		"postgres://", "pgx5://",
 		"postgresql://", "pgx5://",
 	)
-	m, err := migrate.NewWithSourceInstance("iofs", source, r.Replace(config.C.PostgresURL))
+	m, err := migrate.NewWithSourceInstance("iofs", source, r.Replace(cfg.C.PostgresURL))
 	if err != nil {
 		return err
 	}
