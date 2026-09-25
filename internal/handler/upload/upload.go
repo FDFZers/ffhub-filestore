@@ -9,6 +9,7 @@ import (
 	"ffhub-filestore/internal/service/storage"
 	fileutils "ffhub-filestore/internal/util/file"
 	"net/http"
+	"os"
 	"path"
 	"strings"
 
@@ -69,13 +70,18 @@ func storeFileHandler(c *gin.Context) {
 	}
 
 	if !exists {
+		dst := storage.FilePath(sha512)
+		if err := os.MkdirAll(path.Dir(dst), 0o755); err != nil {
+			errs.CreateAndLogInternalError(err, "Failed to create directory").AppendDetails("目录创建失败", "文件上传失败").Respond(c)
+			return
+		}
 		if req.ShouldCopy {
-			if err := fileutils.CopyFile(src, storage.FilePath(sha512)); err != nil {
+			if err := fileutils.CopyFile(src, dst); err != nil {
 				errs.CreateAndLogInternalError(err, "Failed to copy file").AppendDetails("文件复制失败", "文件上传失败").Respond(c)
 				return
 			}
 		} else {
-			if err := fileutils.MoveFile(src, storage.FilePath(sha512)); err != nil {
+			if err := fileutils.MoveFile(src, dst); err != nil {
 				errs.CreateAndLogInternalError(err, "Failed to move file").AppendDetails("文件移动失败", "文件上传失败").Respond(c)
 				return
 			}

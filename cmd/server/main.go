@@ -90,7 +90,6 @@ func main() {
 	// 启动服务器
 	r, healthcheckR := gin.New(), gin.New()
 	r.Use(sloggin.New(logger))
-	healthcheckR.Use(sloggin.New(logger))
 
 	if proxies := cfg.C.TrustedProxies; len(proxies) > 0 {
 		if err := r.SetTrustedProxies(proxies); err != nil {
