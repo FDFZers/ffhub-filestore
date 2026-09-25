@@ -7,10 +7,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func InitRoutes(api *gin.RouterGroup) {
+func InitRoutes(api, internal *gin.RouterGroup) {
 	api.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "欢迎来到 FDFZHub File Store！",
+		})
+	})
+
+	internal.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "你来这里做什么？！",
 		})
 	})
 

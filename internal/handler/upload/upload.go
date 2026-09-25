@@ -1,6 +1,7 @@
 package upload
 
 import (
+	"errors"
 	"ffhub-filestore/internal/cfg"
 	"ffhub-filestore/internal/errs"
 	"ffhub-filestore/internal/middleware"
@@ -26,6 +27,7 @@ type storeFileReq struct {
 	FilePath     string      `json:"file_path,omitempty"`
 	FileName     string      `json:"file_name,omitempty"`
 	ContentType  null.String `json:"content_type"`
+	SHA512       null.String `json:"sha512"`
 	IsPrivate    bool        `json:"is_private"`
 	ShouldUpsert bool        `json:"should_upsert"`
 	ShouldCopy   bool        `json:"should_copy"`
@@ -51,10 +53,20 @@ func storeFileHandler(c *gin.Context) {
 		return
 	}
 
-	sha512, err := fileutils.ComputeSHA512(src)
-	if err != nil {
-		errs.CreateAndLogInternalError(err, "Failed to compute SHA512").AppendDetails("SHA512 计算失败", "文件上传失败").Respond(c)
+	if _, err := os.Stat(src); errors.Is(err, os.ErrNotExist) {
+		errs.InternalError().AppendDetails("无法找到文件", "文件上传失败").Respond(c)
 		return
+	}
+
+	var sha512 string
+	if !req.SHA512.Valid {
+		sha512, err = fileutils.ComputeSHA512(src)
+		if err != nil {
+			errs.CreateAndLogInternalError(err, "Failed to compute SHA512").AppendDetails("SHA512 计算失败", "文件上传失败").Respond(c)
+			return
+		}
+	} else {
+		sha512 = req.SHA512.String
 	}
 
 	if !req.ContentType.Valid {

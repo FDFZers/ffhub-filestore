@@ -44,7 +44,7 @@ func InitRouter(r *gin.Engine) {
 	v1 := r.Group("/api/v1")
 	internal := r.Group("/api/internal")
 
-	misc.InitRoutes(v1)
+	misc.InitRoutes(v1, internal)
 	upload.InitRoutes(internal)
 	download.InitRoutes(internal)
 	file.InitRoutes(v1)

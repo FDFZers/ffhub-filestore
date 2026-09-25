@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS file_metas
     sha512       TEXT        NOT NULL,
     filename     TEXT        NOT NULL DEFAULT '',
     content_type TEXT        NOT NULL DEFAULT 'application/octet-stream',
-    private   BOOLEAN     NOT NULL DEFAULT FALSE,
+    is_private   BOOLEAN     NOT NULL DEFAULT FALSE,
     created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
