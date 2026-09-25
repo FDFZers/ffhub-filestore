@@ -29,6 +29,9 @@ type storeFileReq struct {
 	IsPrivate    bool        `json:"is_private"`
 	ShouldUpsert bool        `json:"should_upsert"`
 	ShouldCopy   bool        `json:"should_copy"`
+	UserID       null.Int64  `json:"user_id"`
+	AppID        null.Int64  `json:"app_id"`
+	BanComment   null.String `json:"ban_comment"`
 }
 
 func storeFileHandler(c *gin.Context) {
@@ -95,6 +98,9 @@ func storeFileHandler(c *gin.Context) {
 		Filename:    req.FileName,
 		ContentType: req.ContentType.String,
 		IsPrivate:   req.IsPrivate,
+		UserID:      req.UserID,
+		AppID:       req.AppID,
+		BanComment:  req.BanComment,
 	}
 	if req.ShouldUpsert {
 		var oldSHA512 string

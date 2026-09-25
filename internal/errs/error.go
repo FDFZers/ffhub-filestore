@@ -46,12 +46,6 @@ func InternalError() *Error {
 func BadRequestError() *Error {
 	return CreateError(http.StatusBadRequest, "bad_request")
 }
-func IllegalStateError() *Error {
-	return CreateError(http.StatusForbidden, "illegal_state")
-}
-func RequestTooLargeError() *Error {
-	return CreateError(http.StatusRequestEntityTooLarge, "request_too_large")
-}
 func UnauthorizedError() *Error {
 	return CreateError(http.StatusUnauthorized, "unauthorized")
 }
@@ -60,6 +54,9 @@ func NotFoundError() *Error {
 }
 func ConflictError() *Error {
 	return CreateError(http.StatusConflict, "conflict")
+}
+func ForbiddenError() *Error {
+	return CreateError(http.StatusForbidden, "forbidden")
 }
 
 func CreateAndLogInternalError[T any](err T, log string, args ...any) *Error {

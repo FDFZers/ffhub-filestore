@@ -30,14 +30,14 @@ func FileMetaIDCacheKey(slug string) string {
 // ---------------------------------------------------------------------------
 
 const createFileMetaSQL = `
-INSERT INTO file_metas (slug, sha512, filename, content_type, is_private)
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO file_metas (slug, sha512, filename, content_type, is_private, user_id, app_id)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING id, created_at
 `
 
 func CreateFileMeta(ctx context.Context, f *model.FileMetadata) *errs.Error {
 	err := db.R.Pool.QueryRow(ctx, createFileMetaSQL,
-		f.Slug, f.SHA512, f.Filename, f.ContentType, f.IsPrivate,
+		f.Slug, f.SHA512, f.Filename, f.ContentType, f.IsPrivate, f.UserID, f.AppID,
 	).Scan(&f.ID, &f.CreatedAt)
 	if err != nil {
 		return errs.CreatePGError(err, "文件元数据", "Failed to create file meta").AppendDetails("文件元数据记录失败")
@@ -56,7 +56,7 @@ func CreateFileMeta(ctx context.Context, f *model.FileMetadata) *errs.Error {
 // ---------------------------------------------------------------------------
 
 const getFileMetaByIDSQL = `
-SELECT id, slug, sha512, filename, content_type, is_private, created_at
+SELECT id, user_id, app_id, slug, sha512, filename, content_type, is_private, ban_comment, created_at
 FROM file_metas
 WHERE id = $1
 `
@@ -70,7 +70,8 @@ func GetFileMetaByID(ctx context.Context, id int64) (*model.FileMetadata, *errs.
 		func() (*model.FileMetadata, error) {
 			var f model.FileMetadata
 			if err := db.R.Pool.QueryRow(ctx, getFileMetaByIDSQL, id).Scan(
-				&f.ID, &f.Slug, &f.SHA512, &f.Filename, &f.ContentType, &f.IsPrivate, &f.CreatedAt,
+				&f.ID, &f.UserID, &f.AppID, &f.Slug, &f.SHA512, &f.Filename,
+				&f.ContentType, &f.IsPrivate, &f.BanComment, &f.CreatedAt,
 			); err != nil {
 				return nil, err
 			}
@@ -133,7 +134,9 @@ UPDATE file_metas
 SET filename      = $2,
     content_type  = $3,
     slug          = $4,
-    is_private    = $5
+    is_private    = $5,
+    user_id       = $6,
+    app_id        = $7
 WHERE id = $1
 `
 
@@ -144,7 +147,7 @@ func UpdateFileMeta(ctx context.Context, f *model.FileMetadata) *errs.Error {
 	}
 
 	if _, err := db.R.Pool.Exec(ctx, updateFileMetaSQL,
-		f.ID, f.Filename, f.ContentType, f.Slug, f.IsPrivate,
+		f.ID, f.Filename, f.ContentType, f.Slug, f.IsPrivate, f.UserID, f.AppID,
 	); err != nil {
 		return errs.CreatePGError(err, "文件元数据", "Failed to update file meta").AppendDetails("文件元数据更新失败")
 	}
@@ -169,14 +172,16 @@ WHERE slug = $1
 `
 
 const upsertFileMetaBySlugSQL = `
-INSERT INTO file_metas (slug, sha512, filename, content_type, is_private)
-VALUES ($1, $2, $3, $4, $5)
+INSERT INTO file_metas (slug, sha512, filename, content_type, is_private, user_id, app_id)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
 ON CONFLICT (slug) WHERE slug IS NOT NULL
 DO UPDATE SET
     sha512        = EXCLUDED.sha512,
     content_type  = EXCLUDED.content_type,
-    filename        = EXCLUDED.filename,
-    is_private    = EXCLUDED.is_private
+    filename      = EXCLUDED.filename,
+    is_private    = EXCLUDED.is_private,
+    user_id       = COALESCE(EXCLUDED.user_id, file_metas.user_id),
+    app_id        = COALESCE(EXCLUDED.app_id,  file_metas.app_id)
 RETURNING id, created_at
 `
 
@@ -191,7 +196,7 @@ func UpsertFileMetaBySlug(ctx context.Context, f *model.FileMetadata) (string, *
 	}
 
 	if err := db.R.Pool.QueryRow(ctx, upsertFileMetaBySlugSQL,
-		f.Slug, f.SHA512, f.Filename, f.ContentType, f.IsPrivate,
+		f.Slug, f.SHA512, f.Filename, f.ContentType, f.IsPrivate, f.UserID, f.AppID,
 	).Scan(&f.ID, &f.CreatedAt); err != nil {
 		return "", errs.CreatePGError(err, "文件元数据", "Failed to upsert file meta by slug").AppendDetails("文件元数据设置失败")
 	}

@@ -13,6 +13,9 @@ type FileMetadata struct {
 	Filename    string      `json:"filename"`
 	ContentType string      `json:"content_type"`
 	IsPrivate   bool        `json:"is_private"`
+	UserID      null.Int64  `json:"user_id"`
+	AppID       null.Int64  `json:"app_id"`
+	BanComment  null.String `json:"ban_comment"`
 	CreatedAt   time.Time   `json:"created_at"`
 }
 

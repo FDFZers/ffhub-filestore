@@ -18,7 +18,7 @@ import (
 )
 
 func InitRoutes(api *gin.RouterGroup) {
-	api.GET("/files/*slug", func(c *gin.Context) {
+	api.GET("/file/*slug", func(c *gin.Context) {
 		serveFile(c, c.Param("slug"))
 	})
 }
@@ -36,6 +36,11 @@ func serveFile(c *gin.Context, slug string) {
 	meta, err := filemeta.GetFileMetaBySlug(c.Request.Context(), slug)
 	if err != nil {
 		err.AppendDetails("文件访问失败").Respond(c)
+		return
+	}
+
+	if meta.BanComment.Valid {
+		errs.ForbiddenError().AppendDetails("文件已被封禁", "文件访问失败").Respond(c)
 		return
 	}
 
