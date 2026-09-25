@@ -21,6 +21,9 @@ func InitRoutes(api *gin.RouterGroup) {
 	api.GET("/file/*slug", func(c *gin.Context) {
 		serveFile(c, c.Param("slug"))
 	})
+	api.GET("/info/*slug", func(c *gin.Context) {
+		fileInfo(c, c.Param("slug"))
+	})
 }
 
 func bearerToken(c *gin.Context) string {
@@ -30,6 +33,52 @@ func bearerToken(c *gin.Context) string {
 		return strings.TrimSpace(auth[len(prefix):])
 	}
 	return ""
+}
+
+func fileInfo(c *gin.Context, slug string) {
+	meta, err := filemeta.GetFileMetaBySlug(c.Request.Context(), slug)
+	if err != nil {
+		err.AppendDetails("文件访问失败").Respond(c)
+		return
+	}
+
+	if meta.BanComment.Valid {
+		c.JSON(http.StatusOK, gin.H{"ban_comment": meta.BanComment.String})
+		return
+	}
+
+	if meta.IsPrivate {
+		token := bearerToken(c)
+		if token == "" {
+			errs.UnauthorizedError().AppendDetails("无法访问私密文件", "文件访问失败").Respond(c)
+			return
+		}
+		if len(token) != 32 {
+			errs.UnauthorizedError().AppendDetails("无效的下载令牌", "文件访问失败").Respond(c)
+			return
+		}
+		s, err := session.GetDownloadSessionByToken(c.Request.Context(), token)
+		if err != nil {
+			err.AppendDetails("文件访问失败").Respond(c)
+			return
+		}
+		if s == nil || s.Slug != slug {
+			errs.UnauthorizedError().AppendDetails("无效的下载令牌", "文件访问失败").Respond(c)
+			return
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"id":           meta.ID,
+		"slug":         meta.Slug,
+		"sha512":       meta.SHA512,
+		"filename":     meta.Filename,
+		"content_type": meta.ContentType,
+		"is_private":   meta.IsPrivate,
+		"user_id":      meta.UserID,
+		"app_id":       meta.AppID,
+		"created_at":   meta.CreatedAt,
+	})
 }
 
 func serveFile(c *gin.Context, slug string) {
