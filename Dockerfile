@@ -13,8 +13,8 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build \
     -ldflags="-s -w \
-        -X ffhub-filestore/internal/config.Commit=${COMMIT} \
-        -X ffhub-filestore/internal/config.BuildTime=${BUILD_TIME}" \
+        -X ffhub-filestore/internal/cfg.Commit=${COMMIT} \
+        -X ffhub-filestore/internal/cfg.BuildTime=${BUILD_TIME}" \
     -trimpath \
     -o ./server \
     ./cmd/server/main.go
