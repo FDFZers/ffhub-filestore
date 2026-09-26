@@ -124,7 +124,7 @@ func serveFile(c *gin.Context, slug string) {
 			errs.UnauthorizedError().AppendDetails("无效的下载令牌", "文件访问失败").Respond(c)
 			return
 		}
-		session.DeleteDownloadSessionByToken(c.Request.Context(), token)
+		defer session.DeleteDownloadSessionByToken(c.Request.Context(), token)
 	}
 
 	f, fErr := os.Open(storage.FilePath(meta.SHA512))

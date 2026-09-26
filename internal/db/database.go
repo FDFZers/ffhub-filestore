@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"ffhub-filestore/internal/errs"
-	"log/slog"
 	"time"
 
 	"github.com/redis/go-redis/v9"
@@ -70,24 +69,12 @@ func GetCached[T any](
 	duration time.Duration,
 	queryFn func() (*T, error), // 缓存未命中时的回源查询函数
 ) (*T, *errs.Error) {
-	// 获取 Redis 缓存值
-	res, err := R.Get(ctx, key).Result()
-	if err == nil {
-		// 命中空值
-		if res == RedisEmptyMark {
-			return nil, nil
-		}
-		// 命中数据
-		var data T
-		if err := json.Unmarshal([]byte(res), &data); err == nil {
-			return &data, nil
-		} else {
-			// 缓存数据损坏，回源查询
-			slog.Warn("Failed to parse cached data", "error", err)
-		}
-	} else if !errors.Is(err, redis.Nil) {
-		// Redis 错误，回源查询
-		slog.Warn("Failed to get cached data", "error", err)
+	rData, rErr := GetRedis[T](ctx, key)
+	if rErr != nil {
+		return nil, rErr
+	}
+	if rData != nil {
+		return rData, nil
 	}
 
 	// 数据为空，回源查询
