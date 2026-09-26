@@ -53,8 +53,13 @@ func storeFileHandler(c *gin.Context) {
 		return
 	}
 
-	if _, err := os.Stat(src); errors.Is(err, os.ErrNotExist) {
-		errs.InternalError().AppendDetails("无法找到文件", "文件上传失败").Respond(c)
+	if _, err := os.Stat(src); err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			errs.NotFoundError().AppendDetails("无法找到文件", "文件上传失败").Respond(c)
+			return
+		}
+		errs.CreateAndLogInternalError(err, "Failed to stat source file").
+			AppendDetails("文件读取失败", "文件上传失败").Respond(c)
 		return
 	}
 
